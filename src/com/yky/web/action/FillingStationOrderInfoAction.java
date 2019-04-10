@@ -40,6 +40,13 @@ public class FillingStationOrderInfoAction {
 		FillingStationOrderInfoService service=new FillingStationOrderInfoServiceImpl();
         return service.getOrderCount();
     }
+	@ResponseBody
+	@RequestMapping("/avg")
+    public Object getAvg(String start,String end,String sid){
+		FillingStationOrderInfoService service=new FillingStationOrderInfoServiceImpl();
+        return service.getAvgByDate(start,end,sid);
+    }
+	
 	
 	@RequestMapping("/FillingStationOrder")
     public String to(){

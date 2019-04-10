@@ -48,7 +48,6 @@ public class FillingStationOrderInfoServiceImpl implements FillingStationOrderIn
 		 report.setxData(FillingStationName);
 		 return report;
     }
-	@Override
 	public List<FillingStation> getList() {
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
 		return dao.getStation();
@@ -56,5 +55,9 @@ public class FillingStationOrderInfoServiceImpl implements FillingStationOrderIn
 	public List<FillingStationOrderInfo> getOrderCount(){
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
 		return dao.getOrderCount();
+	}
+	public String getAvgByDate(String start,String end,String sid) {
+		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
+		return dao.getAvgByDate(start, end, sid);
 	}
 }

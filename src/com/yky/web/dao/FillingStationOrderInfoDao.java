@@ -11,4 +11,5 @@ public interface FillingStationOrderInfoDao {
 	List<FillingStation> getStation();
 	 List<FillingStationOrderInfo> getStationOrder();
 	 List<FillingStationOrderInfo> getOrderCount();
+	 String getAvgByDate(String start,String end,String sid);
 }

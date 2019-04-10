@@ -3,6 +3,7 @@ package com.yky.web.entity;
 public class Echarts {
 	private String[] PayTime;
 	private double[] OrderAmount ;
+	
 	public String[] getPayTime() {
 		return PayTime;
 	}

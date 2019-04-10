@@ -13,4 +13,5 @@ public interface FillingStationOrderInfoService {
 	List<FillingStation> getList();
 	Report getData();
 	List<FillingStationOrderInfo> getOrderCount();
+	String getAvgByDate(String start,String end,String sid);
 }
