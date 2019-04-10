@@ -8,10 +8,11 @@
 <title>报表</title>
 <link rel="stylesheet" href="css/weui.min.css">
 <link rel="stylesheet" href="css/jquery-weui.min.css">
+<script src="js/util.js"></script>
 <script src="js/jquery-2.1.4.js"></script>
 <script src="js/echarts.min.js"></script>
 </head>
-<body onload="javascript:getData('27','龙成西坪加气站')">
+<body onload="javascript:getData('93','勉县新街子十天高速加气站')">
 
 	<div class="weui-flex">
       <div class="weui-flex__item"><div id="order" style="width: 600px; height: 400px;"></div></div>
@@ -21,27 +22,52 @@
       </div>
     </div>
 
-<div class="weui-flex" >
-      <div class="weui-flex__item"><br/></div>
-      <div class="weui-flex__item"><br/></div>
-    </div>
+
+<hr style="height:5px;border:none;border-top:5px ridge green;" />
+   
 
 <div class="weui-flex">
       <div class="weui-flex__item"><div id="main" style="width: 600px; height: 300px;"></div></div>
       <div class="weui-flex__item"> 
            <div class="weui-cell weui-cell_select weui-cell_select-after">
-        
+         <label for="" class="weui-label">加注站名称：</label>
         <div class="weui-cell__bd">
           <select class="weui-select" id="station">
           </select>
         </div>
+        
+        
+        
       </div>
+     
+      <div class="weui-cell">
+         <label for="" class="weui-label">开始日期：</label>
+        <div class="weui-cell__bd">
+         <input type="text" id='start' value=''/>
+        </div>
+      </div>
+     
+      <div class="weui-cell">
+         <label for="" class="weui-label">结束日期：</label>
+        <div class="weui-cell__bd">
+           <input type="text"  id="end"/>
+        </div>
+      </div>
+       <div class="weui-cell__bd">
+        <a href="javascript:getAvg();" class="weui-btn weui-btn_primary">查询</a>
+      </div>
+     
+       
       </div>
       
+      
+        <div class="weui-flex__item"><div id="avg"></div></div>
       </div>
   
 
 	<script type="text/javascript">
+	 
+	
 	var optionstring="";
 	$("#station").empty();
 	$.ajax({
@@ -51,7 +77,7 @@
 	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
 	    		 optionstring += "<option value=\"" + value.fillingStationID + "\" >" + value.fillingStationName + "</option>";
 	    	 });
-	    	 $("#station").html("<option value=''>请选加注站名称</option> "+optionstring); //获得要赋值的select的id，进行赋值
+	    	 $("#station").html("<option value='93'>勉县新街子十天高速加气站</option> "+optionstring); //获得要赋值的select的id，进行赋值
 	     }
 
 		 });
@@ -99,11 +125,11 @@
 	            });
 	        }
 	    });
+		
+		
 	}
 	
-	 var day1 = new Date();
-	  day1.setTime(day1.getTime()-24*60*60*1000);
-	  var s1 = day1.getFullYear()+"-" + (day1.getMonth()+1) + "-" + day1.getDate();
+
 	 
 	
     var orderChart = echarts.init(document.getElementById('order'));
@@ -172,5 +198,20 @@
 		
 	</script>
 <script src="js/jquery-weui.min.js"></script>
+<script type="text/javascript">
+$("#start").calendar();
+$("#end").calendar();
+$('#start').val( (new Date().getFullYear()) + "/" +appendZero( (new Date().getMonth() + 1) )+ "/" +appendZero( (new Date().getDate() - 7)));
+$('#end').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -1)));
+function getAvg(){
+	$.ajax({
+        url: 'avg?sid='+$("#station").val()+'&start='+$('#start').val()+'&end='+$('#end').val(),
+        success: function(res) {
+        	
+        	 $("#avg").html("平均金额："+res+"<br/>时间段："+$("#start").val()+"~"+$('#end').val());
+        }
+    });
+}
+</script>
 </body>
 </html>
