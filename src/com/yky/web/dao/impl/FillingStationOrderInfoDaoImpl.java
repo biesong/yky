@@ -12,7 +12,6 @@ import com.yky.web.entity.FillingStationOrderInfo;
 import com.yky.web.util.DBConnection;
 
 public class FillingStationOrderInfoDaoImpl implements FillingStationOrderInfoDao {
-	@Override
 	/**
 	 * 根据加注站查询近7天加注记录
 	 */
@@ -55,6 +54,7 @@ public class FillingStationOrderInfoDaoImpl implements FillingStationOrderInfoDa
 		String avg="";
 		try {
 			PreparedStatement stmt = (PreparedStatement) db.conn.prepareStatement(sql);
+			
 			ResultSet rs = (ResultSet) stmt.executeQuery();
 			while (rs.next()) {
 				avg=rs.getString(1);
@@ -65,8 +65,29 @@ public class FillingStationOrderInfoDaoImpl implements FillingStationOrderInfoDa
 		}
 		return avg;
 	}
+    public FillingStationOrderInfo getOrder(String OrderSN) {
+    	FillingStationOrderInfo o=new FillingStationOrderInfo();
+    	String sql = "select OrderSN,convert(char(10),PayTime,111)PayTime,Datename(hour,PayTime)PayHour,CONVERT ( CHAR ( 10 ), (DATEADD( hh,- 1, PayTime ) ), 111 ) QPayTime,Datename( HOUR, (DATEADD( hh,- 1, PayTime ) ) ) QPayHour from T_FillingStationOrderInfo where OrderSN=?";
 
-	@Override
+		DBConnection db = new DBConnection();
+		
+		try {
+			PreparedStatement stmt = (PreparedStatement) db.conn.prepareStatement(sql);
+			stmt.setString(1, OrderSN);
+			ResultSet rs = (ResultSet) stmt.executeQuery();
+			while (rs.next()) {
+				o.setOrderSN(rs.getString("OrderSN"));
+				o.setPayTime(rs.getString("PayTime"));
+				o.setPayHour(rs.getString("PayHour"));
+				o.setQPayHour(rs.getString("QPayHour"));
+				o.setQPayTime(rs.getString("QPayTime"));
+			}
+			rs.close();
+			db.close();// 关闭连接
+		} catch (SQLException e) {
+		}
+    	return o;
+    }
 	/**
 	 * 查询加注站信息
 	 */
@@ -122,13 +143,13 @@ public class FillingStationOrderInfoDaoImpl implements FillingStationOrderInfoDa
 	/**
 	 * 查询订单数量
 	 */
-	public List<FillingStationOrderInfo> getOrderCount() {
-		String sql = "SELECT count( OrderAmount ) AS OrderAmount,s.FillingStationName FROM T_FillingStationOrderInfo o,T_FillingStationInfo s WHERE DateDiff(dd,PayTime,getdate()) = 1 and s.FillingStationID=o.FillingStationID GROUP BY	s.FillingStationName order by count( OrderAmount ) desc";
+	public List<FillingStationOrderInfo> getOrderCount(String d) {
+		String sql = "SELECT sum( OrderAmount ) AS OrderAmount,s.FillingStationName FROM T_FillingStationOrderInfo o,T_FillingStationInfo s WHERE convert(varchar(10),PayTime,111)=? and s.FillingStationID=o.FillingStationID and o.OrderState=2 GROUP BY	s.FillingStationName order by count( OrderAmount ) desc";
 		DBConnection db = new DBConnection();
 		List<FillingStationOrderInfo> list = new ArrayList<FillingStationOrderInfo>();
 		try {
 			PreparedStatement stmt = (PreparedStatement) db.conn.prepareStatement(sql);
-			// stmt.setString(1, sid);
+			 stmt.setString(1, d);
 			ResultSet rs = (ResultSet) stmt.executeQuery();
 			while (rs.next()) {
 				double OrderAmount = rs.getDouble("OrderAmount");
@@ -144,4 +165,6 @@ public class FillingStationOrderInfoDaoImpl implements FillingStationOrderInfoDa
 		}
 		return list;
 	}
+	
+	 
 }

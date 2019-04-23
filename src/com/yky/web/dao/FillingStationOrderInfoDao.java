@@ -10,6 +10,7 @@ public interface FillingStationOrderInfoDao {
 	List<FillingStationOrderInfo> getByDate(String sid);
 	List<FillingStation> getStation();
 	 List<FillingStationOrderInfo> getStationOrder();
-	 List<FillingStationOrderInfo> getOrderCount();
+	 List<FillingStationOrderInfo> getOrderCount(String d);
 	 String getAvgByDate(String start,String end,String sid);
+	 public FillingStationOrderInfo getOrder(String OrderSN);
 }

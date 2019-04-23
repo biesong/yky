@@ -12,6 +12,7 @@ public interface FillingStationOrderInfoService {
 	Echarts getData(String sid);
 	List<FillingStation> getList();
 	Report getData();
-	List<FillingStationOrderInfo> getOrderCount();
+	List<FillingStationOrderInfo> getOrderCount(String d);
 	String getAvgByDate(String start,String end,String sid);
+	public FillingStationOrderInfo getOrder(String OrderSN);
 }

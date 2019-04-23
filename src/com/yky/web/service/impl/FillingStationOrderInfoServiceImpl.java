@@ -11,7 +11,6 @@ import com.yky.web.entity.Report;
 import com.yky.web.service.FillingStationOrderInfoService;
 
 public class FillingStationOrderInfoServiceImpl implements FillingStationOrderInfoService {
-	@Override
 	public Echarts getData(String sid) {
 		Echarts echarts=new Echarts();
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
@@ -52,12 +51,16 @@ public class FillingStationOrderInfoServiceImpl implements FillingStationOrderIn
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
 		return dao.getStation();
 	}
-	public List<FillingStationOrderInfo> getOrderCount(){
+	public List<FillingStationOrderInfo> getOrderCount(String d){
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
-		return dao.getOrderCount();
+		return dao.getOrderCount(d);
 	}
 	public String getAvgByDate(String start,String end,String sid) {
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
 		return dao.getAvgByDate(start, end, sid);
+	}
+	public FillingStationOrderInfo getOrder(String OrderSN) {
+		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
+		return dao.getOrder(OrderSN);
 	}
 }
