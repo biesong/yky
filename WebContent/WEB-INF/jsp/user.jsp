@@ -1,89 +1,157 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
   <head>
+    <title>用户</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>我的生活</title>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
 
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.css">
+<link rel="stylesheet" href="css/demos.css">
+<script src="js/util.js"></script>
+   
 
+<script src="js/echarts-all.js"></script>
+<script src="js/jquery-2.1.4.js"></script>
+   <script type="text/javascript" src="js/jquery.table2excel.min.js"> </script>
+<script src="js/jquery-weui.js"></script>
   </head>
-  <body>
-    <div class="page-group">
-       <div class="page">
-  <header class="bar bar-nav">
-    <a class="button button-link button-nav pull-left" href="/demos/card" data-transition='slide-out'>
-      <span class="icon icon-left"></span>
-      返回
-    </a>
-    <h1 class="title">我的生活</h1>
-  </header>
-  <nav class="bar bar-tab">
-    <a class="tab-item active" href="#">
-      <span class="icon icon-home"></span>
-      <span class="tab-label">首页</span>
-    </a>
-    <a class="tab-item" href="#">
-      <span class="icon icon-me"></span>
-      <span class="tab-label">我</span>
-    </a>
-    <a class="tab-item" href="#">
-      <span class="icon icon-star"></span>
-      <span class="tab-label">收藏</span>
-    </a>
-    <a class="tab-item" href="#">
-      <span class="icon icon-settings"></span>
-      <span class="tab-label">设置</span>
-    </a>
-  </nav>
-  <div class="content">
-    <div class="page-index">
-  <div class="card">
-    <div style="background-image:url(//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250.3.0q60.jpg)" valign="bottom" class="card-header color-white no-border">旅途的山</div>
-    <div class="card-content">
-      <div class="card-content-inner">
-        <p class="color-gray">发表于 2015/01/15</p>
-        <p>此处是内容...</p>
-      </div>
+
+ <body >
+
+ <div class="weui-flex">
+ <div class="weui-flex__item"><div id="orderLine" style="width: 800px; height: 400px;"></div></div>
+      <div class="weui-flex__item"><div id="echartsPie" style="width: 600px; height: 400px;"></div>  </div>
+      
     </div>
-    <div class="card-footer">
-      <a href="#" class="link">赞</a>
-      <a href="#" class="link">更多</a>
-    </div>
-  </div>
-  <div class="card">
-    <div style="background-image:url(//gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250.3.0q60.jpg)" valign="bottom" class="card-header color-white no-border">旅途的山</div>
-    <div class="card-content">
-      <div class="card-content-inner">
-        <p class="color-gray">发表于 2015/01/15</p>
-        <p>此处是内容...</p>
-      </div>
-    </div>
-    <div class="card-footer">
-      <a href="#" class="link">赞</a>
-      <a href="#" class="link">更多</a>
-    </div>
-  </div>
+   
+ <script type="text/javascript">
+var vxData;
+ $.ajax({
+	    url:"gevxtuser",
+	    async: false,
+	    success:function(data){
+	    	vxData= data.mData;
+	    }
+	   });
+ var orderData;
+ $.ajax({
+	    url:"orderWeek",
+	    async: false,
+	    success:function(data){
+	    	orderData= data.mData;
+	    }
+	   });
+ var vcodeData;
+ $.ajax({
+	    url:"getvcode",
+	    async: false,
+	    success:function(data){
+	    	vcodeData= data.mData;
+	    }
+	   }); 
  
-</div>
-  </div>
-</div>
-    </div>
-
-    <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
-
+ 
+    $.get('getuser').done(function (data) {
+    	
+    	var orderChart = echarts.init(document.getElementById('orderLine'));
+    	orderChart.setOption({
+         	title : {
+ 				text : '新用户'
+ 			},
+ 			tooltip : {},
+ 			toolbox : {
+ 				
+ 				  show : true,  
+ 				 feature:{
+ 		              dataView : {show: true, lang: ['数据视图', '关闭', '导出Excel'],
+ 		              contentToOption: function (opts) {
+ 		                $("#tableExcel_Day").table2excel({
+ 		                    exclude: ".noExl", //过滤位置的 css 类名
+ 		                    filename:  '用户数量加注订单量对比' + ".xls", //文件名称
+ 		                    name: "Excel Document Name.xls",
+ 		                    exclude_img: true,
+ 		                    exclude_links: true,
+ 		                    exclude_inputs: true
+ 		                });
+ 		            },
+ 		            optionToContent: function (opt) {
+ 		               // console.log(opt);
+ 		 
+ 		                var axisData = opt.xAxis[0].data; //坐标数据
+ 		                var series = opt.series; //折线图数据
+ 		                var tdHeads = '<td  style="padding: 0 10px;background-color:#A9A9A9;">时间</td>'; //表头第一列
+ 		                var tdBodys = ''; //表数据
+ 		                //组装表头
+ 		                var nameData = new Array('新用户','微信用户','验证码','加注订单量');
+ 		                for (var i = 0; i < nameData.length; i++) {
+ 		                    tdHeads += '<td style="padding: 0 10px;background-color:#A9A9A9;">' + nameData[i] + '</td>';
+ 		                }
+ 		                var table = '<table id="tableExcel_Day" border="1" class="table-bordered table-striped" style="width:100%;text-align:center" ><tbody><tr>' + tdHeads + ' </tr>';
+ 		                //组装表数据
+ 		                for (var i = 0, l = axisData.length; i <l; i++) {
+ 		                    for (var j = 0; j < series.length ; j++) {                          
+ 		                        var temp = series[j].data[i];
+ 		                        if (temp != null && temp != undefined) {                                     
+ 		                            tdBodys += '<td>' + temp + '</td>';      
+ 		                        } else {
+ 		                            tdBodys += '<td></td>';
+ 		                        }
+ 		                    }
+ 		                    table += '<tr><td style="padding: 0 10px">' + axisData[i] + '</td>' + tdBodys + '</tr>';
+ 		                    tdBodys = '';
+ 		                }
+ 		                table += '</tbody></table>';                                  
+ 		               // console.log(table);
+ 		                return table;
+ 		                
+ 		            }
+ 		              
+ 		              },
+ 		              magicType: {show: true, type: ['line', 'bar']},
+ 		              saveAsImage:{}
+ 		              }
+ 			},
+ 			legend : {
+ 				data : [ '新用户','微信用户','验证码','加注订单量']
+ 			},
+ 			xAxis : {
+ 				axisLabel : {
+ 					interval : 0,
+ 					rotate : 40
+ 				},
+ 				data : data.xData
+ 			},
+ 			yAxis : {},
+ 			series : [ {
+ 				name : "新用户",
+ 				type : 'line',
+ 				data : data.mData
+ 			},{
+ 				name : "微信用户",
+ 				type : 'line',
+ 				data : vxData
+ 			},
+ 			{
+ 				name : "验证码",
+ 				type : 'line',
+ 				data : vcodeData
+ 			},
+ 			{
+ 				name : "加注订单量",
+ 				type : 'line',
+ 				data : orderData
+ 			}]
+         });
+       
+    });
+         
+ 
+ </script>
   </body>
 </html>
