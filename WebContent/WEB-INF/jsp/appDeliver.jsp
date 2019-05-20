@@ -20,7 +20,7 @@
 <script src="js/jquery-weui.js"></script>
   </head>
 
- <body onload="getByDate();">
+ <body onload="search();">
 
   <div class="weui-tab">
       <div class="weui-navbar">
@@ -36,32 +36,29 @@
        
         <div id="tab3" class="weui-tab__bd-item weui-tab__bd-item--active">
 
+<div class="weui-cells weui-cells_form">
+         <div class="weui-cell">
+         <label for="" class="weui-label">查询日期：</label>
+        <div class="weui-cell__bd">
+           <input type="text"  id="d" class="weui-input"/>
+        </div>
+        
+         
+         
+      </div>
+      </div>
+        <div class="weui-btn-area">
+      <a class="weui-btn weui-btn_primary" href="javascript:search();" >查询</a>
+    </div>
 
-<div class="weui-flex">
 
-      <div class="weui-flex__item"><div id="orderCount"></div></div>
+ 
+     
       
      
-      <div class="weui-flex__item"><div id="orderAmount"></div></div>
-      <div class="weui-flex__item">  
-       <div class="weui-cell">
-         <label for="" class="weui-label">查询日期一：</label>
-        <div class="weui-cell__bd">
-           <input type="text"  id="one"/>
-        </div>
-      </div>
-        <div class="weui-cell">
-         <label for="" class="weui-label">查询日期二：</label>
-        <div class="weui-cell__bd">
-           <input type="text"  id="second"/>
-        </div>
-      </div>
-      
-      
-       <div class="weui-cell__bd">
-        <a href="javascript:getByDate();" class="weui-btn weui-btn_primary">查询</a>
-      </div></div>
-    </div>
+     <div id="orderAmount"></div>
+
+  
 
 
 </div>
@@ -70,34 +67,23 @@
  <script>
 
 
-     
+ var d='<%=StringUtil.getByCalendar(-1)%>';
+
+ $("#d").calendar();
+
+ $('#d').val(d);
 
 
-$("#one").calendar();
-$("#second").calendar();
-$('#one').val('<%=StringUtil.getByCalendar(-2)%>');
-$('#second').val('<%=StringUtil.getByCalendar(-1)%>');
 
 
 
-function getByDate(){
+
+
 	
-	$.ajax({
-	    url:"one?d="+$('#one').val(),
-	    dataType:"json",
-	    success:function(data){
-	    	var orderAmount="";
-	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
-	    		 orderAmount += " <a class='weui-cell weui-cell_access' ><div class='weui-cell__bd'><p>"+value.x+"</p></div><div class='weui-cell__ft' style='color: red;'>"+value.z+"</div></a>";
-	    	 });
-	    	
-	    	 $("#orderCount").html(' <div  style="font-weight: 1000;font-size: larger;">'+$("#one").val()+'</div>'+orderAmount); //获得要赋值的select的id，进行赋值
-	    	
-	    }
-	   });
+function search(){
 	 
 	$.ajax({
-	    url:"second?d="+$('#second').val(),
+	    url:"second?d="+$('#d').val(),
 	    dataType:"json",
 	    success:function(data){
 	    	var orderAmount="";
@@ -105,15 +91,11 @@ function getByDate(){
 	    		 orderAmount += " <a class='weui-cell weui-cell_access' ><div class='weui-cell__bd'><p>"+value.x+"</p></div><div class='weui-cell__ft' style='color: red;'>"+value.z+"</div></a>";
 	    	 });
 	    	
-	    	 $("#orderAmount").html(' <div  style="font-weight: 1000;font-size: larger;">'+$("#second").val()+'</div>'+orderAmount); 
+	    	 $("#orderAmount").html(orderAmount); 
 	    }
 	   });
+
 }
-
-
-
-
-
  </script>
   </body>
 </html>

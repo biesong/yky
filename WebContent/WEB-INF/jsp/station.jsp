@@ -1,3 +1,4 @@
+<%@page import="com.yky.web.util.StringUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,9 +18,10 @@
    <script src="js/jquery-2.1.4.js"></script>
 <script src="js/echarts.min.js"></script>
 <script src="js/jquery-weui.js"></script>
+
   </head>
 
- <body onload="javascript:getData('93','勉县新街子十天高速加气站');getByDate();">
+ <body onload="javascript:getData('93','勉县新街子十天高速加气站');getByDate();active();">
 
   <div class="weui-tab">
       <div class="weui-navbar">
@@ -81,8 +83,8 @@
          <hr style="height:5px;border:none;border-top:5px ridge green;" />
          
          <div class="weui-flex">
-      <div class="weui-flex__item"></div>
-      <div class="weui-flex__item"><div id="active" style="width: 800px; height: 400px;"></div></div>
+   
+      <div class="weui-flex__item">  <input type="text" id="activeText" style="font-size: large;"/><div id="active" style="width: 800px; height: 400px;"></div></div>
       <div class="weui-flex__item"><div id="order" style="width: 800px; height: 400px;"></div></div>
     </div>  
          
@@ -245,10 +247,10 @@ $("#start").calendar();
 $("#end").calendar();
 $("#date").calendar();
 $("#second").calendar();
-$('#second').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -2)));
-$('#date').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -1)));
-$('#start').val( (new Date().getFullYear()) + "/" +appendZero( (new Date().getMonth() + 1) )+ "/" +appendZero( (new Date().getDate() - 7)));
-$('#end').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -1)));
+$('#second').val('<%=StringUtil.getByCalendar(-2)%>');
+$('#date').val('<%=StringUtil.getByCalendar(-1)%>');
+$('#start').val('<%=StringUtil.getByCalendar(-7)%>');
+$('#end').val('<%=StringUtil.getByCalendar(-1)%>');
 function getAvg(){
 	$.ajax({
         url: 'avg?sid='+$("#station").val()+'&start='+$('#start').val()+'&end='+$('#end').val(),
@@ -288,17 +290,16 @@ function getByDate(){
 	    }
 	   });
 }
-
-
-//活跃度
+$("#activeText").calendar();
+$('#activeText').val('<%=StringUtil.getByCalendar(-1)%>');
+function active(){
+	//活跃度
 	$.ajax({
-        url: 'active',
+        url: 'active?d='+$('#activeText').val(),
         success: function(res) {
         	var myChart = echarts.init(document.getElementById('active')); 
             myChart.setOption({
-            	title : {
-    				text : s1
-    			},
+            	
     			tooltip : {},
     			toolbox : {
     				feature : {
@@ -329,9 +330,14 @@ function getByDate(){
             });
         }
     });
+}
+$("#activeText").change(function(){
+	active();
+	});
+
 //订单量
 	$.ajax({
-        url: 'orderWeek',
+        url: 'orderMonth',
         success: function(res) {
         	
         	var myChart = echarts.init(document.getElementById('order')); 
@@ -363,7 +369,7 @@ function getByDate(){
     			yAxis : {},
     			series : [ {
     				name :  "当月订单量",
-    				type : 'bar',
+    				type : 'line',
     				data : res.mData
     			} ]
             });

@@ -22,21 +22,21 @@ public class LoginInterceptor implements HandlerInterceptor {
 	}
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-		//»ñÈ¡ÇëÇóµÄRUi:È¥³ıhttp:localhost:8080Õâ²¿·ÖÊ£ÏÂµÄ
+		
 		         String uri = request.getRequestURI();
-		        //UTL:³ıÁËlogin.jspÊÇ¿ÉÒÔ¹«¿ª·ÃÎÊµÄ£¬ÆäËûµÄURL¶¼½øĞĞÀ¹½Ø¿ØÖÆ
+		      
 		         if (uri.indexOf("/handle") >= 0) {
 		            return true;
 		        }
-		         //»ñÈ¡session
+		       
 		         HttpSession session = request.getSession();
 		         Object name =  session.getAttribute("USER_SESSION");
-		         //ÅĞ¶ÏsessionÖĞÊÇ·ñÓĞÓÃ»§Êı¾İ£¬Èç¹ûÓĞ£¬Ôò·µ»Øtrue£¬¼ÌĞøÏòÏÂÖ´ĞĞ
+		       
 		         if (name != null) {
 		             return true;
 		         }
-		         //²»·ûºÏÌõ¼şµÄ¸ø³öÌáÊ¾ĞÅÏ¢£¬²¢×ª·¢µ½µÇÂ¼Ò³Ãæ
-		         request.setAttribute("msg", "Äú»¹Ã»ÓĞµÇÂ¼£¬ÇëÏÈµÇÂ¼£¡");
+		      
+		         request.setAttribute("msg", "è¯·ç™»å½•");
 		         request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
 		         return false;
 	}

@@ -1,3 +1,4 @@
+<%@page import="com.yky.web.util.StringUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -61,7 +62,20 @@
       
        <div class="weui-cell__bd">
         <a href="javascript:getByDate();" class="weui-btn weui-btn_primary">查询</a>
-      </div></div>
+      </div>
+        <div class="weui-cell">
+          <label for="" class="weui-label">对比新增：</label>
+        <div class="weui-cell__bd" id="reportAdd" style="color: blue;">
+           
+        </div>
+      </div>
+       <div class="weui-cell">
+          <label for="" class="weui-label">未消费：</label>
+        <div class="weui-cell__bd" id="report" style="color: blue;">
+           
+        </div>
+      </div>
+      </div>
     </div>
 
 
@@ -125,13 +139,13 @@
 
 $("#date").calendar();
 $("#second").calendar();
-$('#second').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -2)));
-$('#date').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -1)));
+$('#second').val('<%=StringUtil.getByCalendar(-2)%>');
+$('#date').val('<%=StringUtil.getByCalendar(-1)%>');
 
 $("#start").calendar();
 $("#end").calendar();  
-$('#start').val( (new Date().getFullYear()) + "/" +appendZero( (new Date().getMonth() + 1) )+ "/" +appendZero( (new Date().getDate() - 7)));
-$('#end').val((new Date().getFullYear()) + "/" +  appendZero( (new Date().getMonth() + 1)) + "/" + appendZero((new Date().getDate() -1)));
+$('#start').val('<%=StringUtil.getByCalendar(-7)%>');
+$('#end').val('<%=StringUtil.getByCalendar(-1)%>');
 
 function getData(){
 	var sid=$("#station").val();
@@ -155,6 +169,33 @@ function getData(){
 
 function getByDate(){
 	
+	$.ajax({
+	    url:"report?d1="+$('#second').val()+"&d2="+$('#date').val(),
+	    dataType:"json",
+	    success:function(data){
+	    	var report="";
+	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+	    		 report += value.fillingStationName+"<br/>";
+	    	 });
+	    	
+	    	 $("#report").html(report); //获得要赋值的select的id，进行赋值
+	    	
+	    }
+	   });
+	
+	$.ajax({
+	    url:"report2?d1="+$('#second').val()+"&d2="+$('#date').val(),
+	    dataType:"json",
+	    success:function(data){
+	    	var report="";
+	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+	    		 report += value.fillingStationName+"<br/>";
+	    	 });
+	    	
+	    	 $("#reportAdd").html(report); //获得要赋值的select的id，进行赋值
+	    	
+	    }
+	   });
 	$.ajax({
 	    url:"OrderCount?d="+$('#second').val(),
 	    dataType:"json",

@@ -14,106 +14,92 @@
 <link rel="stylesheet" href="css/weui.min.css">
 <link rel="stylesheet" href="css/jquery-weui.css">
 <link rel="stylesheet" href="css/demos.css">
+
 <script src="js/util.js"></script>
    <script src="js/jquery-2.1.4.js"></script>
 <script src="js/echarts.min.js"></script>
 <script src="js/jquery-weui.js"></script>
+
   </head>
 
- <body onload="getByDate();">
+ <body ">
 
   <div class="weui-tab">
       <div class="weui-navbar">
+        <a class="weui-navbar__item weui-bar__item--on" href="#tab1">
        
-  
-        <a class="weui-navbar__item weui-bar__item--on" href="#tab3">
-       货运订单统计
+        加注站月度金额
+        
         </a>
-        <a class="weui-navbar__item" href="index">回到首页</a>
+         <a class="weui-navbar__item" href="#tab2">
+       货运订单月度总量
+        </a>
+        <a class="weui-navbar__item" href="index">
+          首页
+        </a>
       </div>
       <div class="weui-tab__bd">
-        
-       
-        <div id="tab3" class="weui-tab__bd-item weui-tab__bd-item--active">
-
-
-<div class="weui-flex">
-
-      <div class="weui-flex__item"><div id="orderCount"></div></div>
-      
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
      
-      <div class="weui-flex__item"><div id="orderAmount"></div></div>
-      <div class="weui-flex__item">  
-       <div class="weui-cell">
-         <label for="" class="weui-label">查询日期一：</label>
-        <div class="weui-cell__bd">
-           <input type="text"  id="one"/>
-        </div>
-      </div>
-        <div class="weui-cell">
-         <label for="" class="weui-label">查询日期二：</label>
-        <div class="weui-cell__bd">
-           <input type="text"  id="second"/>
-        </div>
-      </div>
       
-      
-       <div class="weui-cell__bd">
-        <a href="javascript:getByDate();" class="weui-btn weui-btn_primary">查询</a>
-      </div></div>
+    
+        
+           <div id="orderAmount"></div>
+        </div>
+       
+       
+     
+     
+     
+     
+       <div id="tab2" class="weui-tab__bd-item ">
+         <div id="deliver"></div>
+        </div>
+        
+         
+      </div>
     </div>
-
-
-</div>
-        </div>
-      </div>
+     
  <script>
 
+ var d='<%=StringUtil.getByCalendar(-1)%>';
 
-     
+ $("#d").calendar();
 
-
-$("#one").calendar();
-$("#second").calendar();
-$('#one').val('<%=StringUtil.getByCalendar(-2)%>');
-$('#second').val('<%=StringUtil.getByCalendar(-1)%>');
+ $('#d').val(d);
 
 
-
-function getByDate(){
 	
 	$.ajax({
-	    url:"one?d="+$('#one').val(),
+	    url:"amountMonth",
 	    dataType:"json",
 	    success:function(data){
 	    	var orderAmount="";
 	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+	    	
+	    	
 	    		 orderAmount += " <a class='weui-cell weui-cell_access' ><div class='weui-cell__bd'><p>"+value.x+"</p></div><div class='weui-cell__ft' style='color: red;'>"+value.z+"</div></a>";
 	    	 });
 	    	
-	    	 $("#orderCount").html(' <div  style="font-weight: 1000;font-size: larger;">'+$("#one").val()+'</div>'+orderAmount); //获得要赋值的select的id，进行赋值
-	    	
+	    	 $("#orderAmount").html(orderAmount); 
 	    }
 	   });
-	 
+ 
 	$.ajax({
-	    url:"second?d="+$('#second').val(),
+	    url:"deliverMonth",
 	    dataType:"json",
 	    success:function(data){
 	    	var orderAmount="";
 	    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+	    	
+	    	
 	    		 orderAmount += " <a class='weui-cell weui-cell_access' ><div class='weui-cell__bd'><p>"+value.x+"</p></div><div class='weui-cell__ft' style='color: red;'>"+value.z+"</div></a>";
 	    	 });
 	    	
-	    	 $("#orderAmount").html(' <div  style="font-weight: 1000;font-size: larger;">'+$("#second").val()+'</div>'+orderAmount); 
+	    	 $("#deliver").html(orderAmount); 
 	    }
 	   });
-}
-
-
-
-
-
+ 
  </script>
   </body>
 </html>

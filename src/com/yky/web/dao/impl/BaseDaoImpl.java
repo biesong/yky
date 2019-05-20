@@ -28,7 +28,7 @@ public class BaseDaoImpl implements BaseDao {
 				list.add(to);
 			}
 			rs.close();
-			db.close();// πÿ±’¡¨Ω”
+			db.close();//
 		} catch (SQLException e) {
 		}
 		return list;

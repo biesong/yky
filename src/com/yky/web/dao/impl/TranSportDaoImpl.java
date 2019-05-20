@@ -14,7 +14,7 @@ import com.yky.web.util.DBConnection;
 
 public class TranSportDaoImpl implements TranSportDao {
 	/**
-	 * ≤È—Ø∂©µ• ˝¡ø
+	 * 
 	 */
 	public List<TransportOrder> getOrderCount() {
 		String sql = "SELECT	( SELECT c1.RealName FROM T_UserCertInfo c1 WHERE c1.UserID= d.UserID ) Fname,COUNT ( t.OrderNO ) Torder FROM T_TruckDriverInfo t,T_DeliverInfo d WHERE DateDiff(dd,t.AddTime,getdate()) = 1 AND t.DeliverID= d.DeliverID GROUP BY d.UserID";
@@ -33,13 +33,13 @@ public class TranSportDaoImpl implements TranSportDao {
 				list.add(to);
 			}
 			rs.close();
-			db.close();// πÿ±’¡¨Ω”
+			db.close();// 
 		} catch (SQLException e) {
 		}
 		return list;
 	}
 	public List<Data> getOrderByDate() {
-		String sql = "SELECT   COUNT ( t.OrderNO ) Torder,CONVERT(varchar(100), t.AddTime, 112)AddTime FROM T_TruckDriverInfo t WHERE month(getdate())=month(t.AddTime) and CONVERT(varchar(100), t.AddTime, 112)<CONVERT(varchar(100), getdate(), 112)  GROUP BY CONVERT(varchar(100), t.AddTime, 112)";
+		String sql = "SELECT   COUNT ( t.OrderNO ) Torder,CONVERT(varchar(100), t.AddTime, 112)AddTime FROM T_TruckDriverInfo t WHERE DateDiff(dd,t.AddTime,getdate())<=30 and CONVERT(varchar(100), t.AddTime, 112)<CONVERT(varchar(100), getdate(), 112)  GROUP BY CONVERT(varchar(100), t.AddTime, 112)";
 		DBConnection db = new DBConnection();
 		List<Data> list = new ArrayList<Data>();
 		try {
@@ -55,7 +55,7 @@ public class TranSportDaoImpl implements TranSportDao {
 				list.add(to);
 			}
 			rs.close();
-			db.close();// πÿ±’¡¨Ω”
+			db.close();// ÔøΩÿ±ÔøΩÔøΩÔøΩÔøΩÔøΩ
 		} catch (SQLException e) {
 		}
 		return list;
@@ -71,14 +71,14 @@ public class TranSportDaoImpl implements TranSportDao {
 				"    t.OrderFillingPrice  ," + 
 				"    d.TaxRate ," + 
 				"    CONVERT(varchar(100), t.AddTime, 20) AS AddTime," + 
-				"    (case t.DeliverState when 6 then 'Ω¯––÷–'  when 10 then '¥ÚøÓ÷–'  when 11 then '¥ÚøÓÕÍ≥…' else'' end)status "+
+				"    (case t.DeliverState when 6 then 'ËøõË°å‰∏≠'  when 10 then 'ÊâìÊ¨æ‰∏≠'  when 11 then 'ÊâìÊ¨æÂÆåÊàê'  when 7 then 'ÂæÖÁ°ÆËÆ§ÂÆåÊàê'  else'' end)status "+
 				"    FROM  T_TruckDriverInfo t," + 
 				"    T_UserCertInfo c," + 
 				"    T_DeliverInfo d," + 
 				"    T_VehicleInfo v" + 
-				" WHERE t.DeliverState IN ( 6, 10, 11 )" + 
-				"    AND CONVERT(varchar(100), t.AddTime, 23)>='"+start+"'  " + 
-				"    and CONVERT(varchar(100), t.AddTime, 23)<='"+end+"' "+
+				" WHERE t.DeliverState IN ( 6, 10, 11 ,7)" + 
+				"    AND CONVERT(varchar(100), t.AddTime, 111)>='"+start+"'  " + 
+				"    and CONVERT(varchar(100), t.AddTime, 111)<='"+end+"' "+
 				"    AND c.UserID= t.UserID" + 
 				"    AND t.DeliverID= d.DeliverID" + 
 				"    AND v.VehicleID= t.VehicleID" + 
@@ -104,7 +104,7 @@ public class TranSportDaoImpl implements TranSportDao {
 				list.add(td);
 			}
 			rs.close();
-			db.close();// πÿ±’¡¨Ω”
+			db.close();// 
 		} catch (SQLException e) {
 		}
 		return list;

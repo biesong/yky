@@ -8,6 +8,50 @@ public class FillingStationOrderInfo {
 	private String PayHour;
 	private String QPayTime;
 	private String QPayHour;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((FillingStationName == null) ? 0 : FillingStationName.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FillingStationOrderInfo other = (FillingStationOrderInfo) obj;
+		if (FillingStationName == null) {
+			if (other.FillingStationName != null)
+				return false;
+		} else if (!FillingStationName.equals(other.FillingStationName))
+			return false;
+		return true;
+	}
+	private String LoginName;
+	private String Discount;
+	private String PayType;
+	public String getPayType() {
+		return PayType;
+	}
+	public void setPayType(String payType) {
+		PayType = payType;
+	}
+	public String getDiscount() {
+		return Discount;
+	}
+	public void setDiscount(String discount) {
+		Discount = discount;
+	}
+	public String getLoginName() {
+		return LoginName;
+	}
+	public void setLoginName(String loginName) {
+		LoginName = loginName;
+	}
 	public String getPayHour() {
 		return PayHour;
 	}

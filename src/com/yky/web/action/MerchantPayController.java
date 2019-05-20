@@ -1,6 +1,7 @@
 package com.yky.web.action;
 
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.abc.pay.client.Base64;
 import com.abc.pay.client.JSON;
-import com.abc.pay.client.ebus.AuthenMerchantQueryRequest;
 import com.abc.pay.client.ebus.QueryOrderRequest;
 import com.abc.pay.client.ebus.QueryTrnxRecords;
 import com.abc.pay.client.ebus.RefundRequest;
 import com.yky.web.entity.FillingStationOrderInfo;
 import com.yky.web.service.FillingStationOrderInfoService;
 import com.yky.web.service.impl.FillingStationOrderInfoServiceImpl;
+import com.yky.web.util.StringUtil;
 
 
 
@@ -32,9 +33,9 @@ public class MerchantPayController {
 	  public String queryByOrderSN(String n) {
 		  String orderDetail="";
 		  QueryOrderRequest tQueryRequest = new QueryOrderRequest();
-		  tQueryRequest.queryRequest.put("PayTypeID", "ImmediatePay");    //设定交易类型
-		  tQueryRequest.queryRequest.put("OrderNo", doQuery(n));    //设定订单编号 （必要信息）
-		  tQueryRequest.queryRequest.put("QueryDetail", "false");//设定查询方式
+		  tQueryRequest.queryRequest.put("PayTypeID", "ImmediatePay");    
+		  tQueryRequest.queryRequest.put("OrderNo", doQuery(n));    
+		  tQueryRequest.queryRequest.put("QueryDetail", "false");
 		  JSON json = tQueryRequest.postRequest();
 		  String ReturnCode = json.GetKeyValue("ReturnCode");
 		  String ErrorMessage = json.GetKeyValue("ErrorMessage");
@@ -44,13 +45,13 @@ public class MerchantPayController {
 			  String orderInfo = json.GetKeyValue("Order");
 			    if (orderInfo.length() < 1)
 			    {
-			        System.out.println("查询结果为空");
+			        
 			    }else {
-			    	   //1、还原经过base64编码的信息 
+			    	
 			    	Base64 tBase64 = new Base64();
 			  		 orderDetail = new String(tBase64.decode(orderInfo));
 			        json.setJsonString(orderDetail);
-			        System.out.println("订单明细" + orderDetail );
+			    
 			        System.out.println("PayTypeID      = [" + json.GetKeyValue("PayTypeID") + "]");
 			        System. out.println("OrderNo      = [" + json.GetKeyValue("OrderNo") + "]");
 			        System.out.println("OrderDate      = [" + json.GetKeyValue("OrderDate") + "]");
@@ -59,7 +60,7 @@ public class MerchantPayController {
 			        System.out.println("Status      = [" + json.GetKeyValue("Status") + "]");
 			    }
 		  }else {
-			//6、商户订单查询失败
+		
 			   System. out.println("ReturnCode   = [" + ReturnCode + "]");
 			   System. out.println("ErrorMessage = [" + ErrorMessage + "]");
 		  }
@@ -79,34 +80,32 @@ public class MerchantPayController {
 		 JSON j=new JSON(queryByOrderSN(n));
 		 
 		  
-		  //1、生成退款请求对象
+	
 	        RefundRequest tRequest = new RefundRequest();
-	        tRequest.dicRequest.put("OrderDate", j.GetKeyValue("OrderDate"));  //订单日期（必要信息）
-	        tRequest.dicRequest.put("OrderTime", j.GetKeyValue("OrderTime")); //订单时间（必要信息）
-	        //tRequest.dicRequest.put("MerRefundAccountNo", request.getParameter("txtMerRefundAccountNo"));  //商户退款账号
-	        //tRequest.dicRequest.put("MerRefundAccountName", request.getParameter("txtMerRefundAccountName")); //商户退款名
-	        tRequest.dicRequest.put("OrderNo", j.GetKeyValue("OrderNo")); //原交易编号（必要信息）
-	        tRequest.dicRequest.put("NewOrderNo", j.GetKeyValue("OrderNo")+"_refund"); //交易编号（必要信息）
-	        tRequest.dicRequest.put("CurrencyCode", "156"); //交易币种（必要信息）
-	        tRequest.dicRequest.put("TrxAmount", j.GetKeyValue("OrderAmount")); //退货金额 （必要信息）
-	        tRequest.dicRequest.put("MerchantRemarks", "测试");  //附言
-			//如果需要专线地址，调用此方法：
+	        tRequest.dicRequest.put("OrderDate", j.GetKeyValue("OrderDate"));  
+	        tRequest.dicRequest.put("OrderTime", j.GetKeyValue("OrderTime")); 
+	       
+	        tRequest.dicRequest.put("OrderNo", j.GetKeyValue("OrderNo")); 
+	        tRequest.dicRequest.put("NewOrderNo", j.GetKeyValue("OrderNo")+"_refund"); 
+	        tRequest.dicRequest.put("CurrencyCode", "156"); 
+	        tRequest.dicRequest.put("TrxAmount", j.GetKeyValue("OrderAmount")); 
+	      
+		
 			//tRequest.setConnectionFlag(true);
 			
 	
 		
 		 
 
-	        //3、传送退款请求并取得退货结果
+	     
 	        JSON json = tRequest.postRequest();
 
-	        //4、判断退款结果状态，进行后续操作
 	        StringBuilder strMessage = new StringBuilder("");
 	        String ReturnCode = json.GetKeyValue("ReturnCode");
 	        String ErrorMessage = json.GetKeyValue("ErrorMessage");
 	        if (ReturnCode.equals("0000"))
 	        {
-	            //5、退款成功/退款受理成功
+	           
 	             System.out.println("ReturnCode   = [" + ReturnCode + "]<br/>");
 	             System.out.println("ErrorMessage = [" + ErrorMessage + "]<br/>");
 	             System.out.println("OrderNo   = [" + json.GetKeyValue("OrderNo") + "]<br/>");
@@ -120,72 +119,27 @@ public class MerchantPayController {
 	        }       
 	        else
 	        {
-	            //6、退款失败
+	         
 	        	System.out.println("ReturnCode   = [" + ReturnCode + "]<br>");
 	        	System.out.println("ErrorMessage = [" + ErrorMessage + "]<br>");
 			}
 		  return ReturnCode;
 	  }
 	  @ResponseBody
-	  @RequestMapping("/flow")
+	  @RequestMapping(value="/flow")
 	  public Object queryFlow() {
-		  String orderDetail="";
-		  QueryOrderRequest tQueryRequest = new QueryOrderRequest();
-		  tQueryRequest.queryRequest.put("PayTypeID", "ImmediatePay");    //设定交易类型
-		  tQueryRequest.queryRequest.put("OrderNo", "JZ1555725999254BD_190420100639477");    //设定订单编号 （必要信息）
-		  tQueryRequest.queryRequest.put("QueryDetail", "false");//设定查询方式
-		  JSON json = tQueryRequest.postRequest();
-		  String ReturnCode = json.GetKeyValue("ReturnCode");
-		  String ErrorMessage = json.GetKeyValue("ErrorMessage");
-		  if (ReturnCode.equals("0000")) {
-			  System.out.println("ReturnCode   = [" + ReturnCode + "]");
-			  System.out.println("ErrorMessage = [" + ErrorMessage + "]");
-			  String orderInfo = json.GetKeyValue("Order");
-			    if (orderInfo.length() < 1)
-			    {
-			        System.out.println("查询结果为空");
-			    }else {
-			    	   //1、还原经过base64编码的信息 
-			    	Base64 tBase64 = new Base64();
-			  		 orderDetail = new String(tBase64.decode(orderInfo));
-			        json.setJsonString(orderDetail);
-			        System.out.println("订单明细" + orderDetail );
-			        System.out.println("PayTypeID      = [" + json.GetKeyValue("PayTypeID") + "]");
-			        System. out.println("OrderNo      = [" + json.GetKeyValue("OrderNo") + "]");
-			        System.out.println("OrderDate      = [" + json.GetKeyValue("OrderDate") + "]");
-			        System.out.println("OrderTime      = [" + json.GetKeyValue("OrderTime") + "]");
-			        System.out.println("OrderAmount      = [" + json.GetKeyValue("OrderAmount") + "]");
-			        System.out.println("Status      = [" + json.GetKeyValue("Status") + "]");
-			    }
-		  }else {
-			//6、商户订单查询失败
-			   System. out.println("ReturnCode   = [" + ReturnCode + "]");
-			   System. out.println("ErrorMessage = [" + ErrorMessage + "]");
-		  }
-		 
-	    	return orderDetail;
-	  }
-	  
-	  public String  doQuery(String n) {
-		  FillingStationOrderInfoService service=new FillingStationOrderInfoServiceImpl();
-		  FillingStationOrderInfo o=service.getOrder(n);
-		   
-		//2、生成交易流水查询请求对象
 		  QueryTrnxRecords tRequest = new QueryTrnxRecords();
-		  tRequest.dicRequest.put("SettleDate",o.getPayTime());  //查询日期YYYY/MM/DD （必要信息）
-		  tRequest.dicRequest.put("SettleStartHour",o.getPayHour());  //查询开始时间段（0-23）
-		  tRequest.dicRequest.put("SettleEndHour",o.getPayHour());  //查询截止时间段（0-23）
+		  tRequest.dicRequest.put("SettleDate",StringUtil.getByCalendar(0));  
+		  tRequest.dicRequest.put("SettleStartHour",StringUtil.getPreHour("HH"));  
+		  tRequest.dicRequest.put("SettleEndHour",StringUtil.getPreHour("HH"));  
 		  tRequest.dicRequest.put("ZIP","0");
-
-		  //3、传送交易流水查询请求并取得交易流水
 		  JSON json = tRequest.postRequest();
-
-		  //4、判断交易流水查询结果状态，进行后续操作
 		  String ReturnCode = json.GetKeyValue("ReturnCode");
 		  String ErrorMessage = json.GetKeyValue("ErrorMessage");
+		 
 		  if (ReturnCode.equals("0000"))
 		  {
-		      //5、交易流水查询成功，生成交易流水对象
+		     
 		      System.out.println("ReturnCode      = [" + json.GetKeyValue("ReturnCode") + "]<br/>");
 		      System.out.println("ErrorMessage      = [" + json.GetKeyValue("ErrorMessage") + "]<br/>");
 		      System.out.println("TrxType      = [" + json.GetKeyValue("TrxType") + "]<br/>");
@@ -194,17 +148,111 @@ public class MerchantPayController {
 
 		  }
 		  else {
-		      //6、交易流水查询失败
+			  
+			
+			  System.out.println("ReturnCode   = [" + ReturnCode + "]<br>");
+			  System.out.println("ErrorMessage = [" + ErrorMessage + "]<br>");
+			 
+		  }
+		
+			String[] strA=json.GetKeyValue("DetailRecords").split("\\^\\^");
+			 StringBuilder order=new StringBuilder("<table border='1' cellspacing='0'><tr bgcolor='#A9A9A9'><td>Type</td><td>Time</td><td>Amount</td><td>Status</td></tr>");
+			for (String sa : strA) {
+				String[] td=sa.split("\\|");
+				order.append("<tr><td>"+td[0]+"</td><td>"+td[2]+"</td><td>"+td[3]+"</td><td>"+td[4]+"</td></tr>");
+			}
+			order.append("</table>");
+		   return  order.toString();
+			  
+	    	
+	  }
+	  @ResponseBody
+	  @RequestMapping("/all")
+	  public Object queryALL() {
+		
+		
+		
+		  QueryTrnxRecords tRequest = new QueryTrnxRecords();
+		  tRequest.dicRequest.put("SettleDate","2019/05/16");  
+		  tRequest.dicRequest.put("SettleStartHour","1");  
+		  tRequest.dicRequest.put("SettleEndHour","1");  
+		  tRequest.dicRequest.put("ZIP","0");
+
+		
+		  JSON json = tRequest.postRequest();
+
+	
+		  String ReturnCode = json.GetKeyValue("ReturnCode");
+		  String ErrorMessage = json.GetKeyValue("ErrorMessage");
+		  if (ReturnCode.equals("0000"))
+		  {
+		     
+		      System.out.println("ReturnCode      = [" + json.GetKeyValue("ReturnCode") + "]<br/>");
+		      System.out.println("ErrorMessage      = [" + json.GetKeyValue("ErrorMessage") + "]<br/>");
+		      System.out.println("TrxType      = [" + json.GetKeyValue("TrxType") + "]<br/>");
+		   		System.out.println("DetailRecords      = [" + json.GetKeyValue("DetailRecords") + "]<br/>");
+		     
+
+		  }
+		  else {
+			  
+		    
 			  System.out.println("ReturnCode   = [" + ReturnCode + "]<br>");
 			  System.out.println("ErrorMessage = [" + ErrorMessage + "]<br>");
 		  }
-		  //向前推一个小时查询
-		  if(getOrderNo(json.GetKeyValue("DetailRecords"),n).equals("0")) {
-			  tRequest.dicRequest.put("SettleDate",o.getQPayTime());  //查询日期YYYY/MM/DD （必要信息）
-			  tRequest.dicRequest.put("SettleStartHour",o.getQPayHour());  //查询开始时间段（0-23）
-			  tRequest.dicRequest.put("SettleEndHour",o.getQPayHour());  //查询截止时间段（0-23）
-			  tRequest.dicRequest.put("ZIP","0");
+		
+		
+			String[] strA=json.GetKeyValue("DetailRecords").split("\\^\\^");
+			 StringBuilder order=new StringBuilder("<table border='1' cellspacing='0'><tr bgcolor='#A9A9A9'><td>Type</td><td>Time</td><td>Amount</td><td>Status</td></tr>");
+			for (String sa : strA) {
+				String[] td=sa.split("\\|");
+				order.append("<tr><td>"+td[0]+"</td><td>"+td[2]+"</td><td>"+td[3]+"</td><td>"+td[4]+"</td></tr>");
+			}
+			order.append("</table>");
+		   return  order.toString();
+			  
+	    	
+	  }
+	  public String  doQuery(String n) {
+		  FillingStationOrderInfoService service=new FillingStationOrderInfoServiceImpl();
+		  FillingStationOrderInfo o=service.getOrder(n);
+		   
+		
+		  QueryTrnxRecords tRequest = new QueryTrnxRecords();
+		  tRequest.dicRequest.put("SettleDate",o.getPayTime());  
+		  tRequest.dicRequest.put("SettleStartHour",o.getPayHour());  
+		  tRequest.dicRequest.put("SettleEndHour",o.getPayHour());  
+		  tRequest.dicRequest.put("ZIP","0");
 
+		
+		  JSON json = tRequest.postRequest();
+
+	
+		  String ReturnCode = json.GetKeyValue("ReturnCode");
+		  String ErrorMessage = json.GetKeyValue("ErrorMessage");
+		  if (ReturnCode.equals("0000"))
+		  {
+		     
+		      System.out.println("ReturnCode      = [" + json.GetKeyValue("ReturnCode") + "]<br/>");
+		      System.out.println("ErrorMessage      = [" + json.GetKeyValue("ErrorMessage") + "]<br/>");
+		      System.out.println("TrxType      = [" + json.GetKeyValue("TrxType") + "]<br/>");
+		   		System.out.println("DetailRecords      = [" + json.GetKeyValue("DetailRecords") + "]<br/>");
+		     
+
+		  }
+		  else {
+			  
+		    
+			  System.out.println("ReturnCode   = [" + ReturnCode + "]<br>");
+			  System.out.println("ErrorMessage = [" + ErrorMessage + "]<br>");
+		  }
+		
+		  if(getOrderNo(json.GetKeyValue("DetailRecords"),n).equals("0")) {
+			  tRequest.dicRequest.put("SettleDate",o.getQPayTime());  
+			  tRequest.dicRequest.put("SettleStartHour",o.getQPayHour());  
+			  tRequest.dicRequest.put("SettleEndHour",o.getQPayHour());  
+			  tRequest.dicRequest.put("ZIP","0");
+             
 			   
 			  return getOrderNo(tRequest.postRequest().GetKeyValue("DetailRecords"),n);
 		  }else {
@@ -230,8 +278,15 @@ public class MerchantPayController {
 				   return "0";
 			   }else {
 				   String[] s1=results.get(0).split("\\|");
+				  
 					  return s1[1];
 			   }
 			  
 	  }
+	  @ResponseBody
+	  @RequestMapping("/getrefund")
+	public List<FillingStationOrderInfo> getrefund(String f,String start,String end){
+		FillingStationOrderInfoService service=new FillingStationOrderInfoServiceImpl();
+		return service.getRefund(f,start,end);
+	}
 }

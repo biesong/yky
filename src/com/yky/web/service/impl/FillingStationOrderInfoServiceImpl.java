@@ -63,4 +63,8 @@ public class FillingStationOrderInfoServiceImpl implements FillingStationOrderIn
 		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
 		return dao.getOrder(OrderSN);
 	}
+	public List<FillingStationOrderInfo> getRefund(String f,String start,String end) {
+		FillingStationOrderInfoDao dao =new FillingStationOrderInfoDaoImpl();
+		return dao.getRefund(f,start,end);
+	}
 }

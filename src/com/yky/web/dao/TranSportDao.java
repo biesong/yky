@@ -9,7 +9,7 @@ import com.yky.web.entity.TruckDriverInfo;
 public interface TranSportDao {
 
 	/**
-	 * 查询订单数量
+	 * 
 	 */
 	List<TransportOrder> getOrderCount();
 	List<Data> getOrderByDate();

@@ -1,6 +1,10 @@
 package com.yky.web.action;
 
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,13 @@ public class TranSportAction {
     public String toDeliver(){
         return "deliver";
     }
+	
+	@RequestMapping("/appDeliver")
+    public String toAppDeliver(){
+        return "appDeliver";
+    }
+	
+	
 	@ResponseBody
 	@RequestMapping("/tOrder")
     public Report getOrder(){
@@ -60,10 +71,23 @@ public class TranSportAction {
     }
 	
 	@ResponseBody
+	@RequestMapping("/deliverMonth")
+    public List<Data> getDeliverMonth(){
+		
+        return service.getDataList("SELECT 	concat( YEAR(t.AddTime),'/', MONTH(t.AddTime))x,COUNT ( t.OrderNO ) y FROM T_TruckDriverInfo t  GROUP BY  MONTH(t.AddTime),YEAR(t.AddTime) order by YEAR(AddTime)desc, MONTH(AddTime) desc");
+    }
+	
+	
+	
+	@ResponseBody
 	@RequestMapping("/truckDriverInfo")
-    public List<TruckDriverInfo> getTruckDriverInfo(String f,String start,String end){
+    public List<TruckDriverInfo> getTruckDriverInfo(String f,String start,String end) throws IOException {
+	
+		f = URLEncoder.encode(f, "ISO-8859-1");
+	
+		
 		TranSportService service=new TranSportServiceImpl();
-        return service.getTruckDriverInfo(f,start,end);
+        return service.getTruckDriverInfo(URLDecoder.decode(f, "UTF-8"),start,end);
     }
 	@RequestMapping("/wujie")
     public String toWujie(){

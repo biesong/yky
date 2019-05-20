@@ -13,8 +13,8 @@ public class DBConnection {
     public DBConnection() {
 
         try {
-            Class.forName(driver);// ¼ÓÔØÇý¶¯³ÌÐò
-            conn = (Connection) DriverManager.getConnection(url, user, password);// Á¬ÐøÊý¾Ý¿â
+            Class.forName(driver);
+            conn = (Connection) DriverManager.getConnection(url, user, password);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
             
             
         } catch (Exception e) {

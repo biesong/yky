@@ -1,3 +1,4 @@
+<%@page import="com.yky.web.util.StringUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -92,17 +93,17 @@ table.dataintable tr:nth-child(even) {
 </div>
  <script type="text/javascript">
  $( "#start" ).datepicker({
-	 dateFormat:'yy-mm-dd',
+	 dateFormat:'yy/mm/dd',
  });	
  $( "#end" ).datepicker({
-	 dateFormat:'yy-mm-dd',
+	 dateFormat:'yy/mm/dd',
  });	
- $('#start').val( (new Date().getFullYear()) + "-" +appendZero( (new Date().getMonth() + 1) )+ "-" +appendZero( (new Date().getDate() - 7)));
- $('#end').val((new Date().getFullYear()) + "-" +  appendZero( (new Date().getMonth() + 1)) + "-" + appendZero((new Date().getDate() -1)));
+ $('#start').val('<%=StringUtil.getByCalendar(-7)%>');
+ $('#end').val('<%=StringUtil.getByCalendar(-1)%>');
  function search(){     
 	 $("#tb tr").not(':eq(0)').remove();
  $.ajax({
-                url:"truckDriverInfo?f="+$('#f').val()+"&start="+$('#start').val()+"&end="+$('#end').val(),
+                url:"truckDriverInfo?f="+encodeURIComponent($('#f').val())+"&start="+$('#start').val()+"&end="+$('#end').val(),
                 type:"get",
                 dataType:"json",
                 success:function(data){

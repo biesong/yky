@@ -1,3 +1,4 @@
+<%@page import="com.yky.web.util.StringUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -27,7 +28,7 @@
     </header>
 
     <div class="weui-grids">
-    
+ 
       <a href="stationAmount" class="weui-grid js_grid">
         <div class="weui-grid__icon">
           <img src="images/icon_nav_cell.png" alt="">
@@ -74,7 +75,7 @@
    
      
     
-     <!-- 
+   
       <a href="refund" class="weui-grid js_grid">
         <div class="weui-grid__icon">
           <img src="images/icon_nav_dialog.png" alt="">
@@ -83,7 +84,7 @@
           退款
         </p>
       </a>
-       -->
+       
       <a href="user" class="weui-grid js_grid">
         <div class="weui-grid__icon">
           <img src="images/icon_nav_progress.png" alt="">
@@ -92,25 +93,58 @@
           用户
         </p>
       </a>
-         <!--
-      <a href="" class="weui-grid js_grid">
+        
+      <a href="flow" class="weui-grid js_grid">
         <div class="weui-grid__icon">
-          <img src="images/icon_nav_msg.png" alt="">
+          <img src="images/icon_nav_new.png" alt="">
         </div>
         <p class="weui-grid__label">
-          Msg
+         告警
         </p>
       </a>
-      <a href="" class="weui-grid js_grid">
+
+        <a href="appStation" class="weui-grid js_grid">
         <div class="weui-grid__icon">
           <img src="images/icon_nav_article.png" alt="">
         </div>
         <p class="weui-grid__label">
-          Article
+          app加注站
         </p>
       </a>
-       -->
+      <a href="appDeliver" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+          <img src="images/icon_nav_article.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+          app货运订单
+        </p>
+      </a>
+       <a href="monthStation" class="weui-grid js_grid">
+        <div class="weui-grid__icon">
+          <img src="images/icon_nav_panel.png" alt="">
+        </div>
+        <p class="weui-grid__label">
+          月报
+        </p>
+      </a>
     </div>
+    
+           <div class="weui-cells__title" style="color: red;">昨日新增</div>
+    <div class="weui-cells weui-cells_form">
+      <div class="weui-cells__title" id="reportAdd">
+       
+      </div>
+    </div>
+     
+         <div class="weui-cells__title" style="color: red;">未消费</div>
+    <div class="weui-cells weui-cells_form">
+      <div class="weui-cells__title" id="report">
+       
+      </div>
+    </div>
+  
+    
+    
 <div class="weui-footer weui-footer_fixed-bottom">
   <p class="weui-footer__text">航安能源</p>
 </div>
@@ -118,6 +152,37 @@
     <script src="js/jquery-2.1.4.js"></script>
 
 <script src="js/jquery-weui.js"></script>
+<script type="text/javascript">
+var y='<%=StringUtil.getByCalendar(-1)%>';
+var p='<%=StringUtil.getByCalendar(-2)%>';
+$.ajax({
+    url:"report?d1="+p+"&d2="+y,
+    dataType:"json",
+    success:function(data){
+    	var report="";
+    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+    		 report += value.fillingStationName+"<br/>";
+    	 });
+    	
+    	 $("#report").html(report); //获得要赋值的select的id，进行赋值
+    	
+    }
+   });
 
+$.ajax({
+    url:"report2?d1="+p+"&d2="+y,
+    dataType:"json",
+    success:function(data){
+    	var report="";
+    	 $.each(data,function(key,value){  //循环遍历后台传过来的json数据
+    		 report += value.fillingStationName+"<br/>";
+    	 });
+    	
+    	 $("#reportAdd").html(report); //获得要赋值的select的id，进行赋值
+    	
+    }
+   });
+
+</script>
   </body>
 </html>
